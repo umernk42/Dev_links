@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+<div class="mb-3 mx-auto p-4 d-flex justify-content-center">
+    {% if fileLoc %}
+    <img src={{fileLoc}} class="previewImg" alt="profilePic">
+    {% else %}
+    <img src="../static/images/illustration-empty.svg" class="previewImg" alt="emptyProfilepic">
+    {% endif %}
+</div>
+
+<h1 class="mx-auto text-center">{{name}}</h1>
+<p class="mx-auto text-center">{{email}}<p>
+
+<div class="list-group mb-3 p-4 mx-auto">
+    {% for link in links %}
+    <a href="{{ link['url'] }}" target="_blank" class="list-group-item list-group-item-action mb-2">
+      {{ link["website"] }}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="mb-4 d-flex justify-content-center">
+  <button type="button" class="btn btn-success w-50">Share Link</button>
+</div>
+
+{% endblock %}

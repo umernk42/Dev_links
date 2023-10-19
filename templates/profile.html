@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+
+<div class="mb-3 pt-3">
+  <h1>Profile Details</h1>
+  <p>Add your details to create a personal touch to your profile</p>
+</div>
+
+
+<form id="linkForm" class="mb-3" action="/profile" method="post" enctype="multipart/form-data">
+  <div class="mb-3  bg-body-secondary rounded p-2">
+    <label for="picture" class="form-lable mb-2">Profile Picture</label>
+    <div id="ProfileImg" class="ProfileImg">
+      {% if fileLoc %}
+      <img id="UploadImage" class="UploadImage" src={{fileLoc}} alt="uploadImg"/>
+      <input id="picture" name="picture" type="file" accept="image/*" class="form-control">
+      {% else %}
+      <img id="UploadImage" class="UploadImage" src="../static/images/icon-upload-image.svg" alt="uploadImg" />
+      <p>+ Upload Image</p>
+      <input id="picture" name="picture" type="file" accept="image/*" class="form-control">
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="mb-3  bg-body-secondary rounded p-2">
+  <div class="mb-3">
+    <label for="firstname" class="form-lable">First Name</label>
+    <input id="firstname" name="firstname" type="text" class="form-control" value={{first_name}} required>
+  </div>
+
+  <div class="mb-3">
+    <label for="lastname" class="form-lable">Last Name</label>
+    <input id="lastname" name="lastname" type="text" class="form-control" value={{last_name}} required>
+  </div>
+
+  <div class="mb-3">
+    <label for="email" class="form-lable">Email</label>
+    <input id="email" name="email" type="email" class="form-control" value={{email}} required>
+  </div>
+</div>
+
+<hr>
+
+  <button id="linkFormBtn" type="submit" class="btn btn-outline-primary mb-3 w-100 save-btn">Save</button>
+</form>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+  const picture = document.getElementById("picture");
+  const ProfileImgP = document.querySelector(".ProfileImg p")
+
+  picture.addEventListener("change", e => {
+    const file = e.target.files[0]; // Get the selected file
+    const UploadImage = document.getElementById("UploadImage");
+
+    if (file) {
+      // Convert the selected file to a data URL
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = event.target.result;
+        UploadImage.src = img;
+      };
+      reader.readAsDataURL(file);
+    }
+    ProfileImgP.remove();
+    UploadImage.width = 200;
+    UploadImage.height = 200;
+  });
+
+</script>
+{% endblock %}

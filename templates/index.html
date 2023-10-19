@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+<div class="text-start mb-3">
+  <h1 class="pt-3">Customize your links</h1>
+  <p class="py-2">Add/edit/remove links below and then share all you profiles with the world!</p>
+  <button id="addLinkBtn" type="button" class="btn btn-outline-primary w-100 new-link-btn fw-semibold">+ Add New
+    Link</button>
+</div>
+
+<form id="linkForm" action="/" method="post">
+  {% for index,link in existingLinks %}
+  <div class="p-2 rounded link bg-light mb-3" id="link-{{index + 1}}">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <h3 class="align-self-end mt-1">Link #{{ index + 1}}</h3>
+      <button type="button" class="btn" id="removeBtn-{{index + 1}}">Remove</button>
+    </div>
+    <label for="platform{{ index + 1}}">Platform</label>
+    <select id="platform{{ index + 1}}" name="platform{{ index + 1}}" class="form-select mb-2"
+      aria-label="Default select example">
+      {% for web in ["GitHub", "YouTube", "LinkedIn"] %}
+      {% if web==link['website'] %}
+      <option value={{web}} selected>{{ web }}</option>
+      {% else %}
+      <option value={{web}}>{{ web }}</option>
+      {% endif %}
+      {% endfor %}
+    </select>
+    <label for="url{{ index + 1}}">Link</label>
+    <input id="url{{ index + 1}}" name="url{{ index + 1}}" type="text" class="form-control mb-2"
+      value="{{ link['url'] }}">
+  </div>
+  {% endfor %}
+  <hr id="button-divider">
+  <button id="linkFormBtn" type="submit" class="btn btn-outline-primary mb-3 w-100 save-btn">Save</button>
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  const linkBtn = document.getElementById("addLinkBtn");
+  const linkFormBtn = document.getElementById("linkFormBtn");
+  const buttonDivider = document.getElementById("button-divider");
+
+  const allLinks = document.querySelectorAll(".link")
+
+  // Adding remove btn functionality to all intially loaded links
+  try {
+    len = allLinks.length;
+    for (let i = 0; i < len; i++) {
+      removeBtn = document.getElementById(`removeBtn-${i + 1}`);
+
+      removeBtn.addEventListener("click", e => {
+        btnId = e.target.id.split("-")[1];
+        linkId = `link-${btnId}`;
+        link = document.getElementById(linkId);
+        link.remove();
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  linkBtn.addEventListener("click", e => {
+    const count = linkForm.children.length - 1;
+    const newNode = document.createElement("div");
+    newNode.classList.add("mb-3", "p-2", "rounded", "link", "bg-light");
+    newNode.setAttribute("id", `link-${count}`);
+
+    const template = `
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <h3 class="align-self-end mt-1">Link #${count}</h3>
+      <button type="button" class="btn" id="removeBtn-${count}">Remove</button>
+    </div>
+<label for="platform${count}">Platform</label>
+<select id="platform${count}" name="platform${count}" class="form-select mb-2" aria-label="Default select example">
+<option value="GitHub">GitHub</option>
+<option value="YouTube">YouTube</option>
+<option value="LinkedIn">LinkedIn</option>
+</select>
+<label for="url${count}">Link</label>
+<input id="url${count}" name="url${count}" type="text" class="form-control mb-2" required>`;
+    newNode.innerHTML = template;
+
+    buttonDivider.insertAdjacentElement("beforebegin", newNode);
+
+    removeBtn = document.getElementById(`removeBtn-${count}`);
+
+    removeBtn.addEventListener("click", e => {
+      btnId = e.target.id.split("-")[1];
+      linkId = `link-${btnId}`;
+      link = document.getElementById(linkId);
+      link.remove();
+    });
+  });
+</script>
+{% endblock %}
